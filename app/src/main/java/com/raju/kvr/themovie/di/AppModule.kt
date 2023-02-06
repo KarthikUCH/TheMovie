@@ -1,7 +1,10 @@
 package com.raju.kvr.themovie.di
 
 import com.raju.kvr.themovie.data.remote.MovieApi
+import com.raju.kvr.themovie.data.repository.MoviesRepository
+import com.raju.kvr.themovie.data.repository.MoviesRepositoryImpl
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
@@ -13,11 +16,18 @@ import javax.inject.Singleton
 object AppModule {
 
     @Singleton
+    @Provides
     fun provideMovieApi(): MovieApi {
         return Retrofit.Builder()
             .baseUrl("https://https://api.themoviedb.org/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build().create(MovieApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMoviesRepository(movieApi: MovieApi): MoviesRepository {
+        return MoviesRepositoryImpl(movieApi)
     }
 
 }
