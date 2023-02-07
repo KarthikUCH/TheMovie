@@ -12,8 +12,8 @@ data class Movie(
     val title: String,
     val genres: List<Genre>,
     val releaseData: String,
-    val voteAverage: Int,
-    val voteCount: Int,
+    val voteAverage: Double,
+    val voteCount: Double,
 )
 
 data class MovieDetail(
@@ -22,8 +22,8 @@ data class MovieDetail(
     val title: String,
     val genres: List<Genre>,
     val releaseData: String,
-    val voteAverage: Int,
-    val voteCount: Int,
+    val voteAverage: Double,
+    val voteCount: Double,
     val backdrop: String,
     val tagline: String,
     val overview: String,

@@ -9,9 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.raju.kvr.themovie.databinding.FragmentHomeBinding
 import com.raju.kvr.themovie.domain.model.Movie
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val ARG_CATEGORY = "category"
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var category: String

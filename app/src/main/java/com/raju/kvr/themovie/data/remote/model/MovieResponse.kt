@@ -12,8 +12,8 @@ data class MovieResponse(
     @Json(name = "title") val title: String?,
     @Json(name = "genre_ids") val genreIdList: List<Long> = emptyList(),
     @Json(name = "release_data") val releaseData: String?,
-    @Json(name = "vote_average") val voteAverage: Int = 0,
-    @Json(name = "vote_count") val voteCount: Int = 0,
+    @Json(name = "vote_average") val voteAverage: Double = 0.0,
+    @Json(name = "vote_count") val voteCount: Double = 0.0,
 )
 
 fun List<MovieResponse>.asDomainModel(genreMap: Map<Long, String>): List<Movie> {
