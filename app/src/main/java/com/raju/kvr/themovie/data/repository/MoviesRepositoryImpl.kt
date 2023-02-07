@@ -5,15 +5,19 @@ import com.raju.kvr.themovie.data.remote.model.asDomainModel
 import com.raju.kvr.themovie.data.remote.model.mapWithName
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MoviesRepositoryImpl(private val movieApi: MovieApi) : MoviesRepository {
 
     private var genreMap: Map<Long, String> = emptyMap()
 
     override suspend fun getGenres(): Map<Long, String> {
-        return genreMap.ifEmpty {
-            genreMap = movieApi.getGenreList().genres.mapWithName()
-            genreMap
+        return withContext(Dispatchers.IO) {
+            genreMap.ifEmpty {
+                genreMap = movieApi.getGenreList().genres.mapWithName()
+                genreMap
+            }
         }
     }
 
@@ -22,13 +26,13 @@ class MoviesRepositoryImpl(private val movieApi: MovieApi) : MoviesRepository {
         apiKey: String,
         page: Int
     ): Movies {
-        return movieApi.getMovieList(category, apiKey, page).asDomainModel(genreMap)
+        return movieApi.getMovieList(category, page).asDomainModel(genreMap)
     }
 
     override suspend fun getMovieDetail(
         movieId: Long,
         apiKey: String
     ): MovieDetail {
-        return movieApi.getMovieDetail(movieId, apiKey).asDomainModel()
+        return movieApi.getMovieDetail(movieId).asDomainModel()
     }
 }

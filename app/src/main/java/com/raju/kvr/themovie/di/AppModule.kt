@@ -19,7 +19,7 @@ object AppModule {
     @Provides
     fun provideMovieApi(): MovieApi {
         return Retrofit.Builder()
-            .baseUrl("https://https://api.themoviedb.org/")
+            .baseUrl("https://api.themoviedb.org/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build().create(MovieApi::class.java)
     }
