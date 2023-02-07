@@ -23,15 +23,15 @@ class MoviesRepositoryImpl(private val movieApi: MovieApi) : MoviesRepository {
 
     override suspend fun getMovies(
         category: String,
-        apiKey: String,
         page: Int
     ): Movies {
-        return movieApi.getMovieList(category, page).asDomainModel(genreMap)
+        return withContext(Dispatchers.IO) {
+            movieApi.getMovieList(category, page).asDomainModel(genreMap)
+        }
     }
 
     override suspend fun getMovieDetail(
-        movieId: Long,
-        apiKey: String
+        movieId: Long
     ): MovieDetail {
         return movieApi.getMovieDetail(movieId).asDomainModel()
     }

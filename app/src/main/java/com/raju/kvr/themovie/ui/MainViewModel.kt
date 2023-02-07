@@ -10,7 +10,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepository) : ViewModel() {
+class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
+    ViewModel() {
 
     private val _status = MutableLiveData<Status>()
     val status: LiveData<Status> = _status

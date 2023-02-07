@@ -9,13 +9,11 @@ interface MoviesRepository {
 
     suspend fun getMovies(
         category: String,
-        apiKey: String,
         page: Int
     ): Movies
 
     suspend fun getMovieDetail(
-        movieId: Long,
-        apiKey: String,
+        movieId: Long
     ): MovieDetail
 
 }
