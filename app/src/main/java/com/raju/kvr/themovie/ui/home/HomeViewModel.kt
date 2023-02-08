@@ -18,11 +18,13 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     val movies: LiveData<List<Movie>> = _movies
 
     private lateinit var category: String
+    private var isSearch: Boolean = false
     private var page: Int = 1
 
-    fun loadMovies(category: String, page: Int) {
+    fun loadMovies(category: String, page: Int, isSearch: Boolean) {
         this.category = category
         this.page = page
+        this.isSearch = isSearch
         loadMovies()
     }
 
@@ -34,7 +36,11 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private fun loadMovies() {
         viewModelScope.launch {
             try {
-                val movies = moviesRepository.getMovies(category, page)
+                val movies = if(isSearch){
+                    moviesRepository.searchMovies(category, page)
+                } else {
+                    moviesRepository.getMovies(category, page)
+                }
                 _movies.value = _movies.value?.plus(movies.movies) ?: movies.movies
             } catch (e: Exception) {
                 page--

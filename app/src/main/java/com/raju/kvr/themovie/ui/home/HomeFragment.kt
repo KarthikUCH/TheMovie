@@ -14,11 +14,13 @@ import com.raju.kvr.themovie.ui.moviedetail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val ARG_CATEGORY = "category"
+private const val ARG_IS_SEARCH = "is_search"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var category: String
+    private var isSearch: Boolean = false
 
     private lateinit var binding: FragmentHomeBinding
 
@@ -31,6 +33,7 @@ class HomeFragment : Fragment() {
         arguments?.let {
             category =
                 it.getString(ARG_CATEGORY) ?: throw IllegalStateException("Pass valid arguments")
+            isSearch = it.getBoolean(ARG_IS_SEARCH, false)
         }
     }
 
@@ -67,7 +70,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadMovies() {
-        viewModel.loadMovies(category, 1)
+        viewModel.loadMovies(category, 1, isSearch)
     }
 
     private fun observeViewModel() {
@@ -79,10 +82,11 @@ class HomeFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(category: String) =
+        fun newInstance(category: String, isSearch: Boolean = false) =
             HomeFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_CATEGORY, category)
+                    putBoolean(ARG_IS_SEARCH, isSearch)
                 }
             }
     }

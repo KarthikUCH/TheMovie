@@ -30,6 +30,15 @@ class MoviesRepositoryImpl(private val movieApi: MovieApi) : MoviesRepository {
         }
     }
 
+    override suspend fun searchMovies(
+        query: String,
+        page: Int
+    ): Movies {
+        return withContext(Dispatchers.IO) {
+            movieApi.searchMovies(query, page).asDomainModel(genreMap)
+        }
+    }
+
     override suspend fun getMovieDetail(
         movieId: Long
     ): MovieDetail {

@@ -1,5 +1,6 @@
 package com.raju.kvr.themovie.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,7 +14,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMainBinding
 import com.raju.kvr.themovie.ui.home.HomeFragment
+import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
+                startActivity(Intent(this, SearchActivity::class.java))
                 true
             }
             R.id.action_favourite -> {

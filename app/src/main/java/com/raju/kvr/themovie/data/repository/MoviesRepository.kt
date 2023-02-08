@@ -12,6 +12,11 @@ interface MoviesRepository {
         page: Int
     ): Movies
 
+    suspend fun searchMovies(
+        query: String,
+        page: Int
+    ): Movies
+
     suspend fun getMovieDetail(
         movieId: Long
     ): MovieDetail
