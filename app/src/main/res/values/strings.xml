@@ -8,7 +8,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="label_release_date">Release Date: %1$s</string>
-    <string name="label_vote_average">Vote Average: %1$d</string>
-    <string name="label_vote_count">Vote Count: %1$d</string>
+    <string name="label_vote_average">Vote Average: %.0f</string>
+    <string name="label_vote_count">Vote Count: %.0f</string>
 
 </resources>

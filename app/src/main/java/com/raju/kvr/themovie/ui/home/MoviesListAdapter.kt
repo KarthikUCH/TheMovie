@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.MovieListItemBinding
 import com.raju.kvr.themovie.domain.model.Movie
 
@@ -13,7 +15,7 @@ class MoviesListAdapter(private val onClick: (Movie) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         return MovieViewHolder(
-            MovieListItemBinding.inflate(LayoutInflater.from(parent.context))
+            MovieListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -38,7 +40,19 @@ class MoviesListAdapter(private val onClick: (Movie) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             binding.apply {
+                val imageUrl = "https://image.tmdb.org/t/p/original${movie.poster}"
+                imgPoster.load(imageUrl){
+                    placeholder(R.drawable.loading_animation)
+                    error(R.drawable.ic_baseline_error_outline_24)
+                }
 
+                tvName.text = movie.title
+                tvReleaseDate.text = String.format(
+                    tvName.context.getString(R.string.label_release_date),
+                    movie.releaseData
+                )
+                tvVoteAverage.text = String.format(tvName.context.getString(R.string.label_vote_average), movie.voteAverage)
+                tvVoteCount.text = String.format(tvName.context.getString(R.string.label_vote_count), movie.voteCount)
             }
         }
     }

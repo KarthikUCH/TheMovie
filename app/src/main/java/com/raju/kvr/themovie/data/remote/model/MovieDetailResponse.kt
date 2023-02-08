@@ -10,7 +10,7 @@ data class MovieDetailResponse(
     @Json(name = "poster_path") val poster: String?,
     @Json(name = "title") val title: String?,
     @Json(name = "genres") val genres: List<GenreResponse> = emptyList(),
-    @Json(name = "release_data") val releaseData: String?,
+    @Json(name = "release_date") val releaseData: String?,
     @Json(name = "vote_average") val voteAverage: Double = 0.0,
     @Json(name = "vote_count") val voteCount: Double = 0.0,
     @Json(name = "backdrop_path") val backdrop: String?,
