@@ -26,7 +26,6 @@
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:text="@string/app_name"
             app:layout_constraintStart_toEndOf="@id/img_poster"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +35,6 @@
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:text="@string/label_release_date"
             app:layout_constraintStart_toEndOf="@id/img_poster"
             app:layout_constraintTop_toBottomOf="@id/tv_name" />
@@ -46,7 +44,6 @@
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:text="@string/label_vote_average"
             app:layout_constraintStart_toEndOf="@id/img_poster"
             app:layout_constraintTop_toBottomOf="@id/tv_release_date" />
@@ -56,7 +53,6 @@
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:text="@string/label_vote_count"
             app:layout_constraintStart_toEndOf="@id/img_poster"
             app:layout_constraintTop_toBottomOf="@id/tv_vote_average" />

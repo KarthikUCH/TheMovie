@@ -22,6 +22,10 @@ class MoviesListAdapter(private val onClick: (Movie) -> Unit) :
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
         holder.bind(movie)
+
+        holder.itemView.setOnClickListener {
+            onClick(movie)
+        }
     }
 
     companion object {
@@ -48,11 +52,11 @@ class MoviesListAdapter(private val onClick: (Movie) -> Unit) :
 
                 tvName.text = movie.title
                 tvReleaseDate.text = String.format(
-                    tvName.context.getString(R.string.label_release_date),
+                    tvReleaseDate.context.getString(R.string.label_release_date),
                     movie.releaseData
                 )
-                tvVoteAverage.text = String.format(tvName.context.getString(R.string.label_vote_average), movie.voteAverage)
-                tvVoteCount.text = String.format(tvName.context.getString(R.string.label_vote_count), movie.voteCount)
+                tvVoteAverage.text = String.format(tvVoteAverage.context.getString(R.string.label_vote_average), movie.voteAverage)
+                tvVoteCount.text = String.format(tvVoteCount.context.getString(R.string.label_vote_count), movie.voteCount)
             }
         }
     }

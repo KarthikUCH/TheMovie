@@ -33,6 +33,8 @@ class MoviesRepositoryImpl(private val movieApi: MovieApi) : MoviesRepository {
     override suspend fun getMovieDetail(
         movieId: Long
     ): MovieDetail {
-        return movieApi.getMovieDetail(movieId).asDomainModel()
+        return withContext(Dispatchers.IO) {
+            movieApi.getMovieDetail(movieId).asDomainModel()
+        }
     }
 }
