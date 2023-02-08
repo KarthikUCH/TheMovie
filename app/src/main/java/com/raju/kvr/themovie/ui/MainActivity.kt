@@ -1,8 +1,11 @@
 package com.raju.kvr.themovie.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -13,7 +16,7 @@ import com.raju.kvr.themovie.ui.home.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var pagerAdapter: ViewPagerAdapter
@@ -24,7 +27,25 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         observeViewModel()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_search -> {
+                true
+            }
+            R.id.action_favourite -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun observeViewModel() {
@@ -46,16 +67,14 @@ class MainActivity : FragmentActivity() {
 
     private fun displayLoading() {
         binding.apply {
-            imgViewStatus.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+            imgViewStatus.setImageResource(R.drawable.loading_animation)
             txtViewStatus.text = resources.getString(R.string.status_loading)
         }
     }
 
     private fun displayError() {
         binding.apply {
-            imgViewStatus.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            imgViewStatus.setImageResource(R.drawable.ic_baseline_error_outline_24)
             txtViewStatus.text = resources.getString(R.string.status_Error)
         }
     }
