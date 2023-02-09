@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.raju.kvr.themovie.databinding.FragmentHomeBinding
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.moviedetail.MovieDetailActivity
@@ -27,6 +28,8 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: MoviesListAdapter
 
     private val viewModel: HomeViewModel by viewModels()
+
+    private var isLoading: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +57,26 @@ class HomeFragment : Fragment() {
 
     private fun initRecyclerView() {
         adapter = MoviesListAdapter(this::openMovie)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding.apply {
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            addRecyclerViewScrollListener()
+        }
     }
+
+    private fun addRecyclerViewScrollListener() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                if (!isLoading && linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1) {
+                    isLoading = true
+                    viewModel.loadMoreMovies()
+                }
+            }
+        })
+    }
+
 
     private fun openMovie(movie: Movie) {
         activity?.let {
@@ -75,6 +95,18 @@ class HomeFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.movies.observe(this.viewLifecycleOwner) {
             adapter.submitList(it)
+        }
+
+        viewModel.status.observe(this.viewLifecycleOwner) {
+            when (it) {
+                HomeViewModel.Status.LOADING -> {}
+                HomeViewModel.Status.SUCCESS -> {
+                    isLoading = false
+                }
+                HomeViewModel.Status.ERROR -> {
+                    isLoading = false
+                }
+            }
         }
     }
 

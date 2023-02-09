@@ -17,9 +17,13 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
+    private val _status = MutableLiveData<Status>()
+    val status: LiveData<Status> = _status
+
     private lateinit var category: String
     private var isSearch: Boolean = false
     private var page: Int = 1
+    private var reachedLastPage = false
 
     fun loadMovies(category: String, page: Int, isSearch: Boolean) {
         this.category = category
@@ -29,22 +33,35 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     }
 
     fun loadMoreMovies() {
+        if(reachedLastPage) {
+            _status.value = Status.SUCCESS
+            return
+        }
+
         page++
         loadMovies()
     }
 
     private fun loadMovies() {
+        _status.value = Status.LOADING
         viewModelScope.launch {
             try {
-                val movies = if(isSearch){
+                val movies = if (isSearch) {
                     moviesRepository.searchMovies(category, page)
                 } else {
                     moviesRepository.getMovies(category, page)
                 }
-                _movies.value = _movies.value?.plus(movies.movies) ?: movies.movies
+                reachedLastPage = page >= movies.totalPages
+                _movies.value = _movies.value?.plus(movies.movieList) ?: movies.movieList
+                _status.value = Status.SUCCESS
             } catch (e: Exception) {
+                _status.value = Status.ERROR
                 page--
             }
         }
+    }
+
+    enum class Status {
+        LOADING, SUCCESS, ERROR
     }
 }

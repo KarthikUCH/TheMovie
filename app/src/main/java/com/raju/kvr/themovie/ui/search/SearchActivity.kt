@@ -52,7 +52,6 @@ class SearchActivity : AppCompatActivity() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container_view, fragment)
         ft.commit();
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -31,8 +31,8 @@ fun List<MovieResponse>.asDomainModel(genreMap: Map<Long, String>): List<Movie> 
 }
 
 data class MovieListResponse(
-    @Json(name = "page") val page: Long = 0,
-    @Json(name = "total_pages") val totalPages: Long = 0,
+    @Json(name = "page") val page: Int = 0,
+    @Json(name = "total_pages") val totalPages: Int = 0,
     @Json(name = "results") val movies: List<MovieResponse> = emptyList(),
 )
 
@@ -40,6 +40,6 @@ fun MovieListResponse.asDomainModel(genreMap: Map<Long, String>): Movies {
     return Movies(
         page = page,
         totalPages = totalPages,
-        movies = movies.asDomainModel(genreMap)
+        movieList = movies.asDomainModel(genreMap)
     )
 }

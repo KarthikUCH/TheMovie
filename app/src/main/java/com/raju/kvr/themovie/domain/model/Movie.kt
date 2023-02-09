@@ -4,9 +4,9 @@ import com.raju.kvr.themovie.asString
 import com.raju.kvr.themovie.data.db.entity.FavouriteMovie
 
 data class Movies(
-    val page: Long,
-    val totalPages: Long,
-    val movies: List<Movie>
+    val page: Int,
+    val totalPages: Int,
+    val movieList: List<Movie>
 )
 
 data class Movie(
