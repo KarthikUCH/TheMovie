@@ -40,7 +40,7 @@ fun MovieDetailResponse.asDomainModel(): MovieDetail {
         poster = poster ?: "",
         title = title ?: "",
         genres = genres.asDomainModel(),
-        releaseData = releaseData?.toDate() ?: "",
+        releaseDate = releaseData?.toDate() ?: "",
         voteAverage = voteAverage,
         voteCount = voteCount,
         backdrop = backdrop ?: "",

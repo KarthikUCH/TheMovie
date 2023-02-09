@@ -84,7 +84,7 @@ class MovieDetailActivity : AppCompatActivity() {
             tvName.text = movieDetail.title
             tvReleaseDate.text = String.format(
                 resources.getString(R.string.label_release_date),
-                movieDetail.releaseData
+                movieDetail.releaseDate
             )
             tvVoteAverage.text = String.format(
                 resources.getString(R.string.label_vote_average),

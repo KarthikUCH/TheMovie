@@ -14,7 +14,7 @@ data class GenreListResponse(
 
 fun List<GenreResponse>.mapWithName(): Map<Long, String> {
     return associate {
-        it.id to it.name!!
+        it.id to (it.name ?: "")
     }
 }
 

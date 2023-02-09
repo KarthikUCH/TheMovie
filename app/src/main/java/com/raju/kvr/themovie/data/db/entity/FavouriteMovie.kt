@@ -30,7 +30,7 @@ fun FavouriteMovie.asDomainModel(): MovieDetail {
         poster = poster,
         title = title,
         genres = if (genres.isBlank()) emptyList() else genres.asList(),
-        releaseData = releaseData,
+        releaseDate = releaseData,
         voteAverage = voteAverage,
         voteCount = voteCount,
         backdrop = backdrop,
