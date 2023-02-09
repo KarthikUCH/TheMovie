@@ -25,14 +25,21 @@ class MovieDetailActivity : AppCompatActivity() {
 
         val movieId = intent.extras?.getLong(ARG_MOVIE_ID)
             ?: throw IllegalStateException("Pass valid Movie Id")
-        val isFavourite = intent.extras?.getBoolean(ARG_IS_FAVOURITE, false)
-            ?: throw IllegalStateException("Pass valid arguments")
 
         setUpActionBar()
-        observeViewModel()
-        viewModel.loadMovie(movieId, isFavourite)
+        observeViewModel(movieId)
+        viewModel.loadMovie(movieId)
     }
 
+    private fun initFavouriteToggleListener() {
+        binding.toggleFavourite.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.markAsFavourite(isChecked)
+        }
+    }
+
+    private fun removeFavouriteToggleListener() {
+        binding.toggleFavourite.setOnCheckedChangeListener(null)
+    }
 
     private fun setUpActionBar() {
         setSupportActionBar(binding.toolbar)
@@ -45,11 +52,15 @@ class MovieDetailActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel(movieId: Long) {
         viewModel.movieDetail.observe(this, this::displayMovieDetail)
 
-        viewModel.isFavourite.observe(this) {
-            binding.toggleFavourite.isChecked = it
+        viewModel.isFavouriteMovie(movieId).observe(this) { isFavourite ->
+            removeFavouriteToggleListener()
+            binding.toggleFavourite.isChecked = isFavourite
+            binding.toggleFavourite.background =
+                if (isFavourite) getDrawable(R.drawable.ic_baseline_favorite) else getDrawable(R.drawable.ic_baseline_favorite_border)
+            initFavouriteToggleListener()
         }
     }
 
@@ -106,6 +117,5 @@ class MovieDetailActivity : AppCompatActivity() {
 
     companion object {
         const val ARG_MOVIE_ID = "movie_id"
-        const val ARG_IS_FAVOURITE = "is_favourite"
     }
 }

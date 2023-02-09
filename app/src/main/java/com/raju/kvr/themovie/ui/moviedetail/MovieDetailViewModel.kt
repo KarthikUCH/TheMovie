@@ -2,6 +2,7 @@ package com.raju.kvr.themovie.ui.moviedetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
@@ -16,39 +17,34 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepository: Mov
 
     private val _movieDetail = MutableLiveData<MovieDetail>()
     val movieDetail: LiveData<MovieDetail> = _movieDetail
-
-    private val _isFavourite = MutableLiveData<Boolean>()
-    val isFavourite = _isFavourite
-
-    fun loadMovie(movieId: Long, isFavourite: Boolean) {
-        _isFavourite.value = isFavourite
-        if (isFavourite) {
-            loadMovieFromLocal(movieId)
-        } else {
-            loadMovieFromRemote(movieId)
-        }
+    
+    fun isFavouriteMovie(movieId: Long): LiveData<Boolean> = Transformations.map(moviesRepository.getMovieLiveDataFromDb(movieId)) {
+        it != null
     }
 
-    private fun loadMovieFromRemote(movieId: Long) {
+    fun markAsFavourite(isFavourite: Boolean) {
         viewModelScope.launch {
-            try {
-                _movieDetail.value = moviesRepository.getMovieDetail(movieId)
-            } catch (e: Exception) {
-
+            movieDetail.value?.let {
+                if (isFavourite) {
+                    moviesRepository.addToFavourite(it)
+                } else {
+                    moviesRepository.deleteFromFavourite(it.id)
+                }
             }
         }
     }
 
-    private fun loadMovieFromLocal(movieId: Long) {
+    fun loadMovie(movieId: Long) {
+        viewModelScope.launch {
+            try {
+                _movieDetail.value =
+                    moviesRepository.getMovieFromDb(movieId) ?: moviesRepository.getMovieDetail(
+                        movieId
+                    )
+            } catch (e: Exception) {
 
-    }
-
-    private fun markFavourite(){
-
-    }
-
-    private fun unMarkFavourite(){
-
+            }
+        }
     }
 
 }

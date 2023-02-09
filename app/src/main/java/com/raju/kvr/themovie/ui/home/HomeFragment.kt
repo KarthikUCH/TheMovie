@@ -63,7 +63,6 @@ class HomeFragment : Fragment() {
             val intent = Intent(context, MovieDetailActivity::class.java)
             intent.apply {
                 putExtra(MovieDetailActivity.ARG_MOVIE_ID, movie.id)
-                putExtra(MovieDetailActivity.ARG_IS_FAVOURITE, false)
             }
             it.startActivity(intent)
         }

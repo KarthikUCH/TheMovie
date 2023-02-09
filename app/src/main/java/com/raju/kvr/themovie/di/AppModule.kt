@@ -1,5 +1,7 @@
 package com.raju.kvr.themovie.di
 
+import android.content.Context
+import com.raju.kvr.themovie.data.db.MoviesDatabase
 import com.raju.kvr.themovie.data.remote.MovieApi
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.data.repository.MoviesRepositoryImpl
@@ -8,6 +10,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -45,8 +48,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMoviesRepository(movieApi: MovieApi): MoviesRepository {
-        return MoviesRepositoryImpl(movieApi)
+    fun provideMoviesRepository(movieApi: MovieApi, moviesDatabase: MoviesDatabase): MoviesRepository {
+        return MoviesRepositoryImpl(movieApi, moviesDatabase.favouriteMovieDao())
+    }
+
+    @Singleton
+    @Provides
+    fun provideMoviesDatabase(@ApplicationContext appContext: Context): MoviesDatabase{
+        return MoviesDatabase.getDatabase(appContext)
     }
 
 }

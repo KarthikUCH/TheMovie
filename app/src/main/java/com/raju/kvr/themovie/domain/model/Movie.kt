@@ -1,5 +1,8 @@
 package com.raju.kvr.themovie.domain.model
 
+import com.raju.kvr.themovie.asString
+import com.raju.kvr.themovie.data.db.entity.FavouriteMovie
+
 data class Movies(
     val page: Long,
     val totalPages: Long,
@@ -30,5 +33,22 @@ data class MovieDetail(
     val languages: List<Language>,
     val status: String,
 )
+
+fun MovieDetail.asDataModel(): FavouriteMovie {
+    return FavouriteMovie(
+        movieId = id,
+        poster = poster,
+        title = title,
+        genres = genres.asString(),
+        releaseData = releaseData,
+        voteAverage = voteAverage,
+        voteCount = voteCount,
+        backdrop = backdrop,
+        tagline = tagline,
+        overview = overview,
+        languages = languages.asString(),
+        status = status
+    )
+}
 
 
