@@ -1,6 +1,7 @@
 package com.raju.kvr.themovie.data.repository
 
 import androidx.lifecycle.LiveData
+import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
 
@@ -29,5 +30,7 @@ interface MoviesRepository {
     fun getMovieLiveDataFromDb(movieId: Long): LiveData<MovieDetail?>
 
     suspend fun getMovieFromDb(movieId: Long): MovieDetail?
+
+    fun getFavouriteMovies(): LiveData<List<Movie>>
 
 }

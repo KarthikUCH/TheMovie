@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.raju.kvr.themovie.asList
+import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 
 @Entity(tableName = "favourite_movie")
@@ -23,19 +24,33 @@ data class FavouriteMovie(
     @ColumnInfo(name = "status") val status: String
 )
 
-fun FavouriteMovie.asDomainModel(): MovieDetail{
+fun FavouriteMovie.asDomainModel(): MovieDetail {
     return MovieDetail(
         id = movieId,
         poster = poster,
         title = title,
-        genres = genres.asList(), // TODO: JSON conversion
+        genres = if (genres.isBlank()) emptyList() else genres.asList(),
         releaseData = releaseData,
         voteAverage = voteAverage,
         voteCount = voteCount,
         backdrop = backdrop,
         tagline = tagline,
         overview = overview,
-        languages = languages.asList(), // TODO: JSON conversion
+        languages = if (languages.isBlank()) emptyList() else languages.asList(),
         status = status
     )
+}
+
+fun List<FavouriteMovie>.asDomainModal(): List<Movie> {
+    return map {
+        Movie(
+            id = it.movieId,
+            poster = it.poster,
+            title = it.title,
+            genres = if (it.genres.isBlank()) emptyList() else it.genres.asList(),
+            releaseData = it.releaseData,
+            voteAverage = it.voteAverage,
+            voteCount = it.voteCount
+        )
+    }
 }

@@ -13,6 +13,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMainBinding
+import com.raju.kvr.themovie.ui.favourite.FavouriteActivity
 import com.raju.kvr.themovie.ui.home.HomeFragment
 import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_favourite -> {
+                startActivity(Intent(this, FavouriteActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

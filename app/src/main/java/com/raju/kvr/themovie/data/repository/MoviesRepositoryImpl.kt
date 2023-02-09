@@ -3,10 +3,12 @@ package com.raju.kvr.themovie.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.raju.kvr.themovie.data.db.dao.FavouriteMovieDao
+import com.raju.kvr.themovie.data.db.entity.asDomainModal
 import com.raju.kvr.themovie.data.db.entity.asDomainModel
 import com.raju.kvr.themovie.data.remote.MovieApi
 import com.raju.kvr.themovie.data.remote.model.asDomainModel
 import com.raju.kvr.themovie.data.remote.model.mapWithName
+import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
 import com.raju.kvr.themovie.domain.model.asDataModel
@@ -76,6 +78,12 @@ class MoviesRepositoryImpl(
     override suspend fun getMovieFromDb(movieId: Long): MovieDetail? {
         return withContext(Dispatchers.IO) {
             favouriteMovieDao.getMovie(movieId)?.asDomainModel()
+        }
+    }
+
+    override fun getFavouriteMovies(): LiveData<List<Movie>> {
+        return Transformations.map(favouriteMovieDao.getMovieList()) {
+            it.asDomainModal()
         }
     }
 }
