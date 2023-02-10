@@ -53,7 +53,7 @@ class MoviesListAdapter(private val onClick: (Movie) -> Unit) :
                 tvName.text = movie.title
                 tvReleaseDate.text = String.format(
                     tvReleaseDate.context.getString(R.string.label_release_date),
-                    movie.releaseData
+                    movie.releaseDate
                 )
                 tvVoteAverage.text = String.format(tvVoteAverage.context.getString(R.string.label_vote_average), movie.voteAverage)
                 tvVoteCount.text = String.format(tvVoteCount.context.getString(R.string.label_vote_count), movie.voteCount)

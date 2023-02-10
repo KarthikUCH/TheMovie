@@ -11,7 +11,7 @@ import com.raju.kvr.themovie.data.remote.model.mapWithName
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
-import com.raju.kvr.themovie.domain.model.asDataModel
+import com.raju.kvr.themovie.domain.model.asDbModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -59,7 +59,7 @@ class MoviesRepositoryImpl(
 
     override suspend fun addToFavourite(movieDetail: MovieDetail) {
         withContext(Dispatchers.IO) {
-            favouriteMovieDao.insert(movieDetail.asDataModel())
+            favouriteMovieDao.insert(movieDetail.asDbModel())
         }
     }
 

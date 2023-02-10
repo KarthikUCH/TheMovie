@@ -40,7 +40,7 @@ internal class MovieResponseTest {
         Assert.assertEquals(result.id, movieResponse.id)
         Assert.assertEquals(result.poster, movieResponse.poster)
         Assert.assertEquals(result.title, movieResponse.title)
-        Assert.assertEquals(result.releaseData, "28/Nov/2022")
+        Assert.assertEquals(result.releaseDate, "28/Nov/2022")
         Assert.assertEquals(result.voteAverage, movieResponse.voteAverage, 0.0)
         Assert.assertEquals(result.voteCount, movieResponse.voteCount, 0.0)
 

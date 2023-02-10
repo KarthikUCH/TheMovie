@@ -14,7 +14,7 @@ data class Movie(
     val poster: String,
     val title: String,
     val genres: List<Genre>,
-    val releaseData: String,
+    val releaseDate: String,
     val voteAverage: Double,
     val voteCount: Double,
 )
@@ -34,13 +34,13 @@ data class MovieDetail(
     val status: String,
 )
 
-fun MovieDetail.asDataModel(): FavouriteMovie {
+fun MovieDetail.asDbModel(): FavouriteMovie {
     return FavouriteMovie(
         movieId = id,
         poster = poster,
         title = title,
         genres = genres.asString(),
-        releaseData = releaseDate,
+        releaseDate = releaseDate,
         voteAverage = voteAverage,
         voteCount = voteCount,
         backdrop = backdrop,

@@ -23,7 +23,7 @@ fun List<MovieResponse>.asDomainModel(genreMap: Map<Long, String>): List<Movie> 
             poster = it.poster ?: "",
             title = it.title ?: "",
             genres = it.genreIdList.map { id -> Genre(id, genreMap[id] ?: "") },
-            releaseData = it.releaseData?.toDate() ?: "",
+            releaseDate = it.releaseData?.toDate() ?: "",
             voteAverage = it.voteAverage,
             voteCount = it.voteCount
         )

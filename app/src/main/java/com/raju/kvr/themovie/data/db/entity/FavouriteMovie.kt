@@ -14,7 +14,7 @@ data class FavouriteMovie(
     @ColumnInfo(name = "poster") val poster: String,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "genres") val genres: String,
-    @ColumnInfo(name = "release_date") val releaseData: String,
+    @ColumnInfo(name = "release_date") val releaseDate: String,
     @ColumnInfo(name = "vote_average") val voteAverage: Double,
     @ColumnInfo(name = "vote_count") val voteCount: Double,
     @ColumnInfo(name = "backdrop") val backdrop: String,
@@ -30,7 +30,7 @@ fun FavouriteMovie.asDomainModel(): MovieDetail {
         poster = poster,
         title = title,
         genres = if (genres.isBlank()) emptyList() else genres.asList(),
-        releaseDate = releaseData,
+        releaseDate = releaseDate,
         voteAverage = voteAverage,
         voteCount = voteCount,
         backdrop = backdrop,
@@ -48,7 +48,7 @@ fun List<FavouriteMovie>.asDomainModal(): List<Movie> {
             poster = it.poster,
             title = it.title,
             genres = if (it.genres.isBlank()) emptyList() else it.genres.asList(),
-            releaseData = it.releaseData,
+            releaseDate = it.releaseDate,
             voteAverage = it.voteAverage,
             voteCount = it.voteCount
         )
