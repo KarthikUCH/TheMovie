@@ -66,6 +66,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun displayMovieDetail(movieDetail: MovieDetail) {
 
+        binding.layoutDetail.visibility = View.VISIBLE
+
         binding.apply {
             val bgUrl = "https://image.tmdb.org/t/p/original${movieDetail.backdrop}"
             imgBackground.load(bgUrl) {
