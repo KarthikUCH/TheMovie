@@ -13,7 +13,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    private val _status = MutableLiveData<Status>()
+    private val _status = SingleLiveEvent<Status>()
     val status: LiveData<Status> = _status
 
     init {
@@ -31,7 +31,6 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
                     Status.ERROR
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
                 _status.value = Status.ERROR
             }
         }

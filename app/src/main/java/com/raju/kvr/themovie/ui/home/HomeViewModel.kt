@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
+import com.raju.kvr.themovie.ui.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +18,7 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> = _movies
 
-    private val _status = MutableLiveData<Status>()
+    private val _status = SingleLiveEvent<Status>()
     val status: LiveData<Status> = _status
 
     private lateinit var category: String
@@ -33,7 +34,7 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     }
 
     fun loadMoreMovies() {
-        if(reachedLastPage) {
+        if (reachedLastPage) {
             _status.value = Status.SUCCESS
             return
         }
