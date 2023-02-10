@@ -48,7 +48,7 @@ class FavouriteActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.movies.observe(this) {
+        viewModel.getMovies().observe(this) {
             adapter.submitList(it)
         }
     }

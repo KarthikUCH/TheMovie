@@ -252,8 +252,8 @@ internal class MoviesRepositoryTest {
             MutableLiveData(
                 listOf(
                     favouriteMovie,
-                    favouriteMovie.copy(id = 1081894),
-                    favouriteMovie.copy(id = 1081895)
+                    favouriteMovie.copy(id = 2, movieId = 1081894),
+                    favouriteMovie.copy(id = 3, movieId = 1081895)
                 )
             )
         whenever((favouriteMovieDao.getMovieList())).then { favouriteMovieList }
