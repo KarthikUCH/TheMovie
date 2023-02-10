@@ -8,6 +8,7 @@ import coil.load
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMovieDetailBinding
 import com.raju.kvr.themovie.domain.model.MovieDetail
+import com.raju.kvr.themovie.domain.model.toUiData
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -113,6 +114,24 @@ class MovieDetailActivity : AppCompatActivity() {
                 )
             } else {
                 tvOverview.visibility = View.GONE
+            }
+
+            if (movieDetail.genres.isNotEmpty()) {
+                tvGenre.text = String.format(
+                    resources.getString(R.string.label_genre),
+                    movieDetail.genres.toUiData()
+                )
+            } else {
+                tvGenre.visibility = View.GONE
+            }
+
+            if (movieDetail.languages.isNotEmpty()) {
+                tvLanguage.text = String.format(
+                    resources.getString(R.string.label_language),
+                    movieDetail.languages.toUiData()
+                )
+            } else {
+                tvLanguage.visibility = View.GONE
             }
         }
     }

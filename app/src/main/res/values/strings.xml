@@ -13,6 +13,8 @@
     <string name="label_release_date">Release Date: %1$s</string>
     <string name="label_tagline">Tagline: %1$s</string>
     <string name="label_overView">Overview: %1$s</string>
+    <string name="label_genre">Genre: %1$s</string>
+    <string name="label_language">Language: %1$s</string>
     <string name="label_vote_average">Vote Average: %.0f</string>
     <string name="label_vote_count">Vote Count: %.0f</string>
 
