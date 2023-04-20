@@ -66,20 +66,14 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override fun getMovieLiveDataFromDb(movieId: Long): LiveData<MovieDetail?> {
-        return Transformations.map(favouriteMovieDao.getMovieLiveData(movieId)) {
-            it?.asDomainModel()
-        }
-    }
-
-    override suspend fun getMovieFromDb(movieId: Long): Flow<MovieDetail?> {
+    override fun getMovieFromDb(movieId: Long): Flow<MovieDetail?> {
         return favouriteMovieDao.getMovie(movieId).map {
             it?.asDomainModel()
         }.flowOn(Dispatchers.IO)
     }
 
-    override fun getFavouriteMovies(): LiveData<List<Movie>> {
-        return Transformations.map(favouriteMovieDao.getMovieList()) {
+    override fun getFavouriteMovies(): Flow<List<Movie>> {
+        return favouriteMovieDao.getMovieList().map {
             it.asDomainModal()
         }
     }

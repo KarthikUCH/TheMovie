@@ -9,10 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteMovieDao {
 
     @Query("SELECT * from favourite_movie")
-    fun getMovieList(): LiveData<List<FavouriteMovie>>
-
-    @Query("SELECT * from favourite_movie WHERE movie_id = :movieId")
-    fun getMovieLiveData(movieId: Long): LiveData<FavouriteMovie?>
+    fun getMovieList(): Flow<List<FavouriteMovie>>
 
     @Query("SELECT * from favourite_movie WHERE movie_id = :movieId")
     fun getMovie(movieId: Long): Flow<FavouriteMovie?>

@@ -200,7 +200,7 @@ internal class MoviesRepositoryTest {
         verify(favouriteMovieDao, times(1)).delete(movieDetail.id)
     }
 
-    @Test
+    /*@Test
     fun getMovieLiveDataFromDb() {
 
         val favouriteMovieData: LiveData<FavouriteMovie> = MutableLiveData(favouriteMovie)
@@ -211,7 +211,7 @@ internal class MoviesRepositoryTest {
         verify(favouriteMovieDao, times(1)).getMovieLiveData(1081893)
 
         // TODO : Test Transformation by observing livedata
-    }
+    }*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test

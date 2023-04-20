@@ -115,7 +115,7 @@ internal class MovieDetailViewModelTest {
     @Test
     fun isFavouriteMovie_returnTrue() = runTest {
         whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
-        whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(movieDetail)}
+        /*whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(movieDetail)}*/
 
         viewModel.loadMovie(1081893)
         Assert.assertTrue(viewModel.isFavouriteMovie(1081893).getOrAwaitValue())
@@ -124,7 +124,7 @@ internal class MovieDetailViewModelTest {
     @Test
     fun isFavouriteMovie_returnFalse() = runTest {
         whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
-        whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(null)}
+        /*whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(null)}*/
 
         viewModel.loadMovie(1081893)
         Assert.assertFalse(viewModel.isFavouriteMovie(1081893).getOrAwaitValue())

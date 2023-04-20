@@ -28,10 +28,8 @@ interface MoviesRepository {
 
     suspend fun deleteFromFavourite(movieId: Long)
 
-    fun getMovieLiveDataFromDb(movieId: Long): LiveData<MovieDetail?>
+    fun getMovieFromDb(movieId: Long): Flow<MovieDetail?>
 
-    suspend fun getMovieFromDb(movieId: Long): Flow<MovieDetail?>
-
-    fun getFavouriteMovies(): LiveData<List<Movie>>
+    fun getFavouriteMovies(): Flow<List<Movie>>
 
 }
