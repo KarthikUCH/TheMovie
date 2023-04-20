@@ -4,24 +4,25 @@ import androidx.lifecycle.LiveData
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
+import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    suspend fun getGenres(): Map<Long, String>
+    fun getGenres(): Flow<Boolean>
 
-    suspend fun getMovies(
+    fun getMovies(
         category: String,
         page: Int
-    ): Movies
+    ): Flow<Movies>
 
-    suspend fun searchMovies(
+    fun searchMovies(
         query: String,
         page: Int
-    ): Movies
+    ): Flow<Movies>
 
-    suspend fun getMovieDetail(
+    fun getMovieDetail(
         movieId: Long
-    ): MovieDetail
+    ): Flow<MovieDetail>
 
     suspend fun addToFavourite(movieDetail: MovieDetail)
 
@@ -29,7 +30,7 @@ interface MoviesRepository {
 
     fun getMovieLiveDataFromDb(movieId: Long): LiveData<MovieDetail?>
 
-    suspend fun getMovieFromDb(movieId: Long): MovieDetail?
+    suspend fun getMovieFromDb(movieId: Long): Flow<MovieDetail?>
 
     fun getFavouriteMovies(): LiveData<List<Movie>>
 

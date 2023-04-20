@@ -13,6 +13,10 @@ import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
 import com.raju.kvr.themovie.domain.model.asDbModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class MoviesRepositoryImpl(
@@ -22,39 +26,32 @@ class MoviesRepositoryImpl(
 
     private var genreMap: Map<Long, String> = emptyMap()
 
-    override suspend fun getGenres(): Map<Long, String> {
-        return withContext(Dispatchers.IO) {
-            genreMap.ifEmpty {
-                genreMap = movieApi.getGenreList().genres.mapWithName()
-                genreMap
-            }
+    override fun getGenres(): Flow<Boolean> = flow {
+        genreMap.ifEmpty {
+            genreMap = movieApi.getGenreList().genres.mapWithName()
+            genreMap
         }
-    }
+        emit(genreMap.isNotEmpty())
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun getMovies(
+    override fun getMovies(
         category: String,
         page: Int
-    ): Movies {
-        return withContext(Dispatchers.IO) {
-            movieApi.getMovieList(category, page).asDomainModel(genreMap)
-        }
-    }
+    ): Flow<Movies> = flow<Movies> {
+        emit(movieApi.getMovieList(category, page).asDomainModel(genreMap))
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun searchMovies(
+    override fun searchMovies(
         query: String,
         page: Int
-    ): Movies {
-        return withContext(Dispatchers.IO) {
-            movieApi.searchMovies(query, page).asDomainModel(genreMap)
-        }
-    }
+    ): Flow<Movies> = flow<Movies> {
+        emit(movieApi.searchMovies(query, page).asDomainModel(genreMap))
+    }.flowOn(Dispatchers.IO)
 
-    override suspend fun getMovieDetail(
+    override fun getMovieDetail(
         movieId: Long
-    ): MovieDetail {
-        return withContext(Dispatchers.IO) {
-            movieApi.getMovieDetail(movieId).asDomainModel()
-        }
+    ): Flow<MovieDetail> = flow {
+        emit(movieApi.getMovieDetail(movieId).asDomainModel())
     }
 
     override suspend fun addToFavourite(movieDetail: MovieDetail) {
@@ -75,10 +72,10 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override suspend fun getMovieFromDb(movieId: Long): MovieDetail? {
-        return withContext(Dispatchers.IO) {
-            favouriteMovieDao.getMovie(movieId)?.asDomainModel()
-        }
+    override suspend fun getMovieFromDb(movieId: Long): Flow<MovieDetail?> {
+        return favouriteMovieDao.getMovie(movieId).map {
+            it?.asDomainModel()
+        }.flowOn(Dispatchers.IO)
     }
 
     override fun getFavouriteMovies(): LiveData<List<Movie>> {

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,13 +37,15 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepository: Mov
 
     fun loadMovie(movieId: Long) {
         viewModelScope.launch {
-            try {
-                _movieDetail.value =
-                    moviesRepository.getMovieFromDb(movieId) ?: moviesRepository.getMovieDetail(
-                        movieId
-                    )
-            } catch (e: Exception) {
 
+            moviesRepository.getMovieFromDb(movieId).flatMapConcat {
+                it?.let {
+                    flowOf(it)
+                } ?: moviesRepository.getMovieDetail(movieId)
+            }.catch {
+                it.printStackTrace()
+            }.collect{
+                _movieDetail.value = it
             }
         }
     }

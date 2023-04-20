@@ -3,6 +3,7 @@ package com.raju.kvr.themovie.data.db.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.raju.kvr.themovie.data.db.entity.FavouriteMovie
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteMovieDao {
@@ -14,7 +15,7 @@ interface FavouriteMovieDao {
     fun getMovieLiveData(movieId: Long): LiveData<FavouriteMovie?>
 
     @Query("SELECT * from favourite_movie WHERE movie_id = :movieId")
-    suspend fun getMovie(movieId: Long): FavouriteMovie?
+    fun getMovie(movieId: Long): Flow<FavouriteMovie?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(movie: FavouriteMovie)

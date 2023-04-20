@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,15 +25,14 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private fun loadGenres() {
         viewModelScope.launch {
             _status.value = Status.LOADING
-            try {
-                val result = moviesRepository.getGenres()
-                _status.value = if (result.isNotEmpty()) {
+            moviesRepository.getGenres().catch {
+                _status.value = Status.ERROR
+            }.collect { isSuccess ->
+                _status.value = if (isSuccess) {
                     Status.SUCCESS
                 } else {
                     Status.ERROR
                 }
-            } catch (e: Exception) {
-                _status.value = Status.ERROR
             }
         }
     }

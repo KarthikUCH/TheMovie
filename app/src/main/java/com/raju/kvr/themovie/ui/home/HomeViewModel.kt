@@ -8,6 +8,7 @@ import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,18 +47,17 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private fun loadMovies() {
         _status.value = Status.LOADING
         viewModelScope.launch {
-            try {
-                val movies = if (isSearch) {
-                    moviesRepository.searchMovies(category, page)
-                } else {
-                    moviesRepository.getMovies(category, page)
-                }
+            if (isSearch) {
+                moviesRepository.searchMovies(category, page)
+            } else {
+                moviesRepository.getMovies(category, page)
+            }.catch {
+                _status.value = Status.ERROR
+                page--
+            }.collect { movies ->
                 reachedLastPage = page >= movies.totalPages
                 _movies.value = _movies.value?.plus(movies.movieList) ?: movies.movieList
                 _status.value = Status.SUCCESS
-            } catch (e: Exception) {
-                _status.value = Status.ERROR
-                page--
             }
         }
     }
