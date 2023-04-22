@@ -9,6 +9,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.raju.kvr.themovie.R
@@ -17,6 +20,8 @@ import com.raju.kvr.themovie.ui.favourite.FavouriteActivity
 import com.raju.kvr.themovie.ui.home.HomeFragment
 import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -55,17 +60,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        mainViewModel.status.observe(this) {
-            when (it) {
-                MainViewModel.Status.LOADING -> {
-                    displayLoading()
-                }
-                MainViewModel.Status.SUCCESS -> {
-                    displayHomePage()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.status.collect{
+                    when (it) {
+                        MainViewModel.Status.LOADING -> {
+                            displayLoading()
+                        }
+                        MainViewModel.Status.SUCCESS -> {
+                            displayHomePage()
 
-                }
-                MainViewModel.Status.ERROR -> {
-                    displayError()
+                        }
+                        MainViewModel.Status.ERROR -> {
+                            displayError()
+                        }
+                    }
                 }
             }
         }

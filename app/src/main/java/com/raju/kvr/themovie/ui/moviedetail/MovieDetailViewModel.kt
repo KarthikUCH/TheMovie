@@ -6,12 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
+import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,13 +17,17 @@ import javax.inject.Inject
 class MovieDetailViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    private val _movieDetail = MutableLiveData<MovieDetail>()
-    val movieDetail: LiveData<MovieDetail> = _movieDetail
+    private val _movieDetail = MutableStateFlow<MovieDetail>(MovieDetail.emptyMovieDetail)
+    val movieDetail: StateFlow<MovieDetail> = _movieDetail
 
-    fun isFavouriteMovie(movieId: Long): LiveData<Boolean> =
+    fun isFavouriteMovie(movieId: Long): StateFlow<Boolean> =
         moviesRepository.getMovieFromDb(movieId).map {
             it != null
-        }.asLiveData()
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = false
+        )
 
     fun markAsFavourite(isFavourite: Boolean) {
         viewModelScope.launch {

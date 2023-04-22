@@ -7,12 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.raju.kvr.themovie.databinding.FragmentHomeBinding
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.moviedetail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 private const val ARG_CATEGORY = "category"
 private const val ARG_IS_SEARCH = "is_search"
@@ -93,21 +98,31 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.movies.observe(this.viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-        viewModel.status.observe(this.viewLifecycleOwner) {
-            when (it) {
-                HomeViewModel.Status.LOADING -> {}
-                HomeViewModel.Status.SUCCESS -> {
-                    isLoading = false
+                launch {
+                    viewModel.movies.collect() {
+                        adapter.submitList(it)
+                    }
                 }
-                HomeViewModel.Status.ERROR -> {
-                    isLoading = false
+
+                launch {
+                    viewModel.status.collect {
+                        when (it) {
+                            HomeViewModel.Status.LOADING -> {}
+                            HomeViewModel.Status.SUCCESS -> {
+                                isLoading = false
+                            }
+                            HomeViewModel.Status.ERROR -> {
+                                isLoading = false
+                            }
+                        }
+                    }
                 }
             }
         }
+
     }
 
     companion object {

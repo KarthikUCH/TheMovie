@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import coil.load
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMovieDetailBinding
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.toUiData
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MovieDetailActivity : AppCompatActivity() {
@@ -54,14 +59,26 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel(movieId: Long) {
-        viewModel.movieDetail.observe(this, this::displayMovieDetail)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.movieDetail.collect() {
+                        displayMovieDetail(it)
+                    }
+                }
 
-        viewModel.isFavouriteMovie(movieId).observe(this) { isFavourite ->
-            removeFavouriteToggleListener()
-            binding.toggleFavourite.isChecked = isFavourite
-            binding.toggleFavourite.background =
-                if (isFavourite) getDrawable(R.drawable.ic_baseline_favorite) else getDrawable(R.drawable.ic_baseline_favorite_border)
-            initFavouriteToggleListener()
+                launch {
+                    viewModel.isFavouriteMovie(movieId).collect() { isFavourite ->
+                        removeFavouriteToggleListener()
+                        binding.toggleFavourite.isChecked = isFavourite
+                        binding.toggleFavourite.background =
+                            if (isFavourite) getDrawable(R.drawable.ic_baseline_favorite) else getDrawable(
+                                R.drawable.ic_baseline_favorite_border
+                            )
+                        initFavouriteToggleListener()
+                    }
+                }
+            }
         }
     }
 

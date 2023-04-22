@@ -32,7 +32,14 @@ data class MovieDetail(
     val overview: String,
     val languages: List<Language>,
     val status: String,
-)
+) {
+    companion object {
+        val emptyMovieDetail = MovieDetail(
+            -1, "", "", emptyList(), "", 0.0,
+            0.0, "", "", "", emptyList(), ""
+        )
+    }
+}
 
 fun MovieDetail.asDbModel(): FavouriteMovie {
     return FavouriteMovie(

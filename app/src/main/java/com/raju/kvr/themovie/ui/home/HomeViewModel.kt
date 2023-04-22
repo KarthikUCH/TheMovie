@@ -8,6 +8,8 @@ import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,11 +18,11 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movies: LiveData<List<Movie>> = _movies
+    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
+    val movies: StateFlow<List<Movie>> = _movies
 
-    private val _status = SingleLiveEvent<Status>()
-    val status: LiveData<Status> = _status
+    private val _status = MutableStateFlow<Status>(Status.LOADING)
+    val status: StateFlow<Status> = _status
 
     private lateinit var category: String
     private var isSearch: Boolean = false
