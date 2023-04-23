@@ -1,12 +1,9 @@
 package com.raju.kvr.themovie.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
-import com.raju.kvr.themovie.ui.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

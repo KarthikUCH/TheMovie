@@ -1,15 +1,12 @@
 package com.raju.kvr.themovie.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,8 +14,9 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    private val _status = MutableStateFlow<Status>(Status.LOADING)
-    val status: StateFlow<Status> = _status
+    private val _statusChannel =
+        Channel<Status>() // Using channel inorder to get the behaviour of Single Live Event
+    val status = _statusChannel.receiveAsFlow()
 
     init {
         loadGenres()
@@ -26,15 +24,17 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
 
     private fun loadGenres() {
         viewModelScope.launch {
-            _status.value = Status.LOADING
+            _statusChannel.send(Status.LOADING)
             moviesRepository.getGenres().catch {
-                _status.value = Status.ERROR
+                _statusChannel.send(Status.ERROR)
             }.collect { isSuccess ->
-                _status.value = if (isSuccess) {
-                    Status.SUCCESS
-                } else {
-                    Status.ERROR
-                }
+                _statusChannel.send(
+                    if (isSuccess) {
+                        Status.SUCCESS
+                    } else {
+                        Status.ERROR
+                    }
+                )
             }
         }
     }
