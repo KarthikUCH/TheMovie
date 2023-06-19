@@ -52,7 +52,7 @@ class MoviesRepositoryImpl(
         movieId: Long
     ): Flow<MovieDetail> = flow {
         emit(movieApi.getMovieDetail(movieId).asDomainModel())
-    }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun addToFavourite(movieDetail: MovieDetail) {
         withContext(Dispatchers.IO) {
