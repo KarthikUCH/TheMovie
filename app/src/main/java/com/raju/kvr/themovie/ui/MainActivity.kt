@@ -69,11 +69,12 @@ class MainActivity : AppCompatActivity() {
                         }
                         MainViewModel.Status.SUCCESS -> {
                             displayHomePage()
-
+                            mainViewModel.displayedHomePage()
                         }
                         MainViewModel.Status.ERROR -> {
                             displayError()
                         }
+                        else -> {}
                     }
                 }
             }

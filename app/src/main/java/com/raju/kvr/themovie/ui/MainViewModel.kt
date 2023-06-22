@@ -4,9 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,9 +15,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    private val _statusChannel =
-        Channel<Status>() // Using channel inorder to get the behaviour of Single Live Event
-    val status = _statusChannel.receiveAsFlow()
+    private val _statusChannel = MutableStateFlow<Status?>(null)
+    val status: StateFlow<Status?> = _statusChannel.asStateFlow()
 
     init {
         loadGenres()
@@ -24,19 +24,22 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
 
     private fun loadGenres() {
         viewModelScope.launch {
-            _statusChannel.send(Status.LOADING)
+            _statusChannel.value = Status.LOADING
             moviesRepository.getGenres().catch {
-                _statusChannel.send(Status.ERROR)
+                _statusChannel.value = Status.ERROR
             }.collect { isSuccess ->
-                _statusChannel.send(
+                _statusChannel.value =
                     if (isSuccess) {
                         Status.SUCCESS
                     } else {
                         Status.ERROR
                     }
-                )
             }
         }
+    }
+
+    fun displayedHomePage() {
+        _statusChannel.value = null
     }
 
     enum class Status {
