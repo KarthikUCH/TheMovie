@@ -3,7 +3,8 @@ package com.raju.kvr.themovie.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.raju.kvr.themovie.MainDispatcherRule
 import com.raju.kvr.themovie.data.repository.MoviesRepository
-import com.raju.kvr.themovie.getOrAwaitValue
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
@@ -12,7 +13,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.whenever
-import kotlin.coroutines.cancellation.CancellationException
 
 
 @RunWith(MockitoJUnitRunner::class)
@@ -35,25 +35,35 @@ internal class MainViewModelTest {
 
     @Test
     fun loadGenres_success() = runTest {
-        whenever(moviesRepository.getGenres()).then { genreMap }
+        // Given
+        val genreMapFlow: Flow<Boolean> = flow { emit(true) }
+        whenever(moviesRepository.getGenres()).then { genreMapFlow }
+
+        // When
         val viewModel = MainViewModel(moviesRepository)
 
-        Assert.assertEquals(MainViewModel.Status.SUCCESS, viewModel.status.getOrAwaitValue())
+        // Then
+        Assert.assertEquals(MainViewModel.Status.SUCCESS, viewModel.status.value)
     }
 
     @Test
     fun loadGenres_success_withEmptyGenreList() = runTest {
-        whenever(moviesRepository.getGenres()).then { emptyMap<Long, String>() }
+        // Given
+        val genreMapFlow: Flow<Boolean> = flow { emit(false) }
+        whenever(moviesRepository.getGenres()).then { genreMapFlow }
+
+        // When
         val viewModel = MainViewModel(moviesRepository)
 
-        Assert.assertEquals(MainViewModel.Status.ERROR, viewModel.status.getOrAwaitValue())
+        // Then
+        Assert.assertEquals(MainViewModel.Status.ERROR, viewModel.status.value)
     }
 
     @Test
     fun loadGenres_Error() = runTest {
-        whenever(moviesRepository.getGenres()).thenThrow(CancellationException())
+        whenever(moviesRepository.getGenres()).then { flow<Boolean> { throw RuntimeException() } }
         val viewModel = MainViewModel(moviesRepository)
 
-        Assert.assertEquals(MainViewModel.Status.ERROR, viewModel.status.getOrAwaitValue())
+        Assert.assertEquals(MainViewModel.Status.ERROR, viewModel.status.value)
     }
 }

@@ -1,13 +1,13 @@
 package com.raju.kvr.themovie.ui.moviedetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.raju.kvr.themovie.MainDispatcherRule
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Genre
 import com.raju.kvr.themovie.domain.model.Language
 import com.raju.kvr.themovie.domain.model.MovieDetail
-import com.raju.kvr.themovie.getOrAwaitValue
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.*
 import org.junit.Assert
 import org.junit.Before
@@ -35,13 +35,11 @@ internal class MovieDetailViewModelTest {
     private lateinit var moviesRepository: MoviesRepository
 
     private val genreList: List<Genre> = listOf(
-        Genre(1, "Action"),
-        Genre(3, "Animation")
+        Genre(1, "Action"), Genre(3, "Animation")
     )
 
     private val languageList: List<Language> = listOf(
-        Language("English", "English"),
-        Language("Deutsch", "German")
+        Language("English", "English"), Language("Deutsch", "German")
     )
 
     private val movieDetail = MovieDetail(
@@ -66,12 +64,15 @@ internal class MovieDetailViewModelTest {
 
     @Test
     fun loadMovie_fromRemote() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { null }
-        whenever(moviesRepository.getMovieDetail(1081893)).then { movieDetail }
+        // Given
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(null) }
+        whenever(moviesRepository.getMovieDetail(1081893)).then { flowOf(movieDetail) }
 
+        // When
         viewModel.loadMovie(1081893)
-        val result = viewModel.movieDetail.getOrAwaitValue()
+        val result = viewModel.movieDetail.first()
 
+        // Then
         verify(moviesRepository, times(1)).getMovieFromDb(1081893)
         verify(moviesRepository, times(1)).getMovieDetail(1081893)
 
@@ -81,10 +82,10 @@ internal class MovieDetailViewModelTest {
 
     @Test
     fun loadMovie_fromDb() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(movieDetail) }
 
         viewModel.loadMovie(1081893)
-        val result = viewModel.movieDetail.getOrAwaitValue()
+        val result = viewModel.movieDetail.first()
 
         verify(moviesRepository, times(1)).getMovieFromDb(1081893)
         verify(moviesRepository, times(0)).getMovieDetail(1081893)
@@ -94,8 +95,8 @@ internal class MovieDetailViewModelTest {
 
     @Test
     fun markAsFavourite_asTrue() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
-        whenever(moviesRepository.addToFavourite(movieDetail)).then {  }
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(movieDetail) }
+        whenever(moviesRepository.addToFavourite(movieDetail)).then { }
 
         viewModel.loadMovie(1081893)
         viewModel.markAsFavourite(true)
@@ -104,8 +105,8 @@ internal class MovieDetailViewModelTest {
 
     @Test
     fun markAsFavourite_asFalse() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
-        whenever(moviesRepository.deleteFromFavourite(1081893)).then {  }
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(movieDetail) }
+        whenever(moviesRepository.deleteFromFavourite(1081893)).then { }
 
         viewModel.loadMovie(1081893)
         viewModel.markAsFavourite(false)
@@ -114,20 +115,20 @@ internal class MovieDetailViewModelTest {
 
     @Test
     fun isFavouriteMovie_returnTrue() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(movieDetail) }
         /*whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(movieDetail)}*/
 
         viewModel.loadMovie(1081893)
-        Assert.assertTrue(viewModel.isFavouriteMovie(1081893).getOrAwaitValue())
+        Assert.assertTrue(viewModel.isFavouriteMovie(1081893).first())
     }
 
     @Test
     fun isFavouriteMovie_returnFalse() = runTest {
-        whenever(moviesRepository.getMovieFromDb(1081893)).then { movieDetail }
+        whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(null) }
         /*whenever(moviesRepository.getMovieLiveDataFromDb(1081893)).then { MutableLiveData(null)}*/
 
         viewModel.loadMovie(1081893)
-        Assert.assertFalse(viewModel.isFavouriteMovie(1081893).getOrAwaitValue())
+        Assert.assertFalse(viewModel.isFavouriteMovie(1081893).first())
     }
 
 }

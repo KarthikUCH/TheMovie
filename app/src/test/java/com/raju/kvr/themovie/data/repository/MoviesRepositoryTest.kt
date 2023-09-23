@@ -8,6 +8,9 @@ import com.raju.kvr.themovie.data.remote.MovieApi
 import com.raju.kvr.themovie.data.remote.model.*
 import com.raju.kvr.themovie.domain.model.asDbModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
@@ -100,21 +103,28 @@ internal class MoviesRepositoryTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getGenres() = runTest {
+    fun getGenres_Success() = runTest {
 
         whenever(movieApi.getGenreList()).then { genreListResponse }
-        val genreMapResult = moviesRepository.getGenres()
+        val genreMapResult = moviesRepository.getGenres().first()
 
         // verify(genreListResponse.genres.mapWithName(), times(1)) TODO
         verify(movieApi, times(1)).getGenreList()
 
-        Assert.assertEquals(5, genreMapResult.size)
-        Assert.assertEquals("Action", genreMapResult[1])
-        Assert.assertEquals("Adventure", genreMapResult[2])
-        Assert.assertEquals("Animation", genreMapResult[3])
-        Assert.assertEquals("Comedy", genreMapResult[4])
-        Assert.assertEquals("Crime", genreMapResult[5])
+        Assert.assertEquals(true, genreMapResult)
+    }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun getGenres_Failure() = runTest {
+
+        whenever(movieApi.getGenreList()).then { GenreListResponse(emptyList()) }
+        val genreMapResult = moviesRepository.getGenres().first()
+
+        // verify(genreListResponse.genres.mapWithName(), times(1)) TODO
+        verify(movieApi, times(1)).getGenreList()
+
+        Assert.assertEquals(false, genreMapResult)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -126,7 +136,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.getMovieList("category", 1)).then { movieListResponse }
 
-        var movies = moviesRepository.getMovies("category", 1)
+        var movies = moviesRepository.getMovies("category", 1).first()
 
         verify(movieApi, times(1)).getMovieList("category", 1)
 
@@ -143,7 +153,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.searchMovies("query", 1)).then { movieListResponse }
 
-        var moviesResult = moviesRepository.searchMovies("query", 1)
+        var moviesResult = moviesRepository.searchMovies("query", 1).first()
 
         verify(movieApi, times(1)).searchMovies("query", 1)
 
@@ -157,7 +167,7 @@ internal class MoviesRepositoryTest {
     fun getMovieDetail() = runTest {
         whenever(movieApi.getMovieDetail(1081893)).then { movieDetailResponse }
 
-        var movieDetailResult = moviesRepository.getMovieDetail(1081893)
+        var movieDetailResult = moviesRepository.getMovieDetail(1081893).first()
 
         verify(movieApi, times(1)).getMovieDetail(1081893)
 
@@ -216,9 +226,10 @@ internal class MoviesRepositoryTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getMovieFromDb() = runTest {
-        whenever(favouriteMovieDao.getMovie(1081893)).then { favouriteMovie }
+        val favouriteMovieFlow: Flow<FavouriteMovie?> = flow { emit(favouriteMovie) }
+        whenever(favouriteMovieDao.getMovie(1081893)).then { favouriteMovieFlow }
 
-        val movieDetailResult = moviesRepository.getMovieFromDb(1081893)
+        val movieDetailResult = moviesRepository.getMovieFromDb(1081893).first()
 
         verify(favouriteMovieDao, times(1)).getMovie(1081893)
 
@@ -228,9 +239,10 @@ internal class MoviesRepositoryTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getMovieFromDb_invalidMovieId_returnsNullMovieDetail() = runTest {
-        whenever(favouriteMovieDao.getMovie(-1)).then { null }
+        val invalidMovie: Flow<FavouriteMovie?> = flow { emit(null) }
+        whenever(favouriteMovieDao.getMovie(-1)).then { invalidMovie }
 
-        val movieDetailResult = moviesRepository.getMovieFromDb(-1)
+        val movieDetailResult = moviesRepository.getMovieFromDb(-1).first()
 
         verify(favouriteMovieDao, times(1)).getMovie(-1)
 
@@ -238,20 +250,26 @@ internal class MoviesRepositoryTest {
     }
 
     @Test
-    fun getFavouriteMovies() {
-        val favouriteMovieList: LiveData<List<FavouriteMovie>> = MutableLiveData(
-            listOf(
-                favouriteMovie,
-                favouriteMovie.copy(id = 2, movieId = 1081894),
-                favouriteMovie.copy(id = 3, movieId = 1081895)
+    fun getFavouriteMovies() = runTest {
+        val favouriteMovieList: Flow<List<FavouriteMovie>> = flow {
+            emit(
+                listOf(
+                    favouriteMovie,
+                    favouriteMovie.copy(id = 2, movieId = 1081894),
+                    favouriteMovie.copy(id = 3, movieId = 1081895)
+                )
             )
-        )
+        }
         whenever((favouriteMovieDao.getMovieList())).then { favouriteMovieList }
 
-        moviesRepository.getFavouriteMovies()
+        val moviesList = moviesRepository.getFavouriteMovies().first()
 
         verify(favouriteMovieDao, times(1)).getMovieList()
 
-        // TODO : Test Transformation by observing livedata
+        Assert.assertEquals(3, moviesList.size)
+        Assert.assertEquals(1081893, moviesList[0].id)
+        Assert.assertEquals(1081894, moviesList[1].id)
+        Assert.assertEquals(1081895, moviesList[2].id)
+
     }
 }
