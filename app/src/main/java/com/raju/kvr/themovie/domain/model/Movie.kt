@@ -13,6 +13,7 @@ data class Movie(
     val id: Long,
     val poster: String,
     val title: String,
+    val genres: List<Genre>,
     val releaseDate: String,
     val voteAverage: Double,
     val voteCount: Double,
