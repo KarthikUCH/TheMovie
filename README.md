@@ -1,5 +1,7 @@
 # The Movie
 ## 1. Home Screen
+<img src="/Screenshots/Screenshot_Home.png?raw=true" alt="Home Screen" style="width:300px;"/>
+
 The user is expected to land on this page every time the app is opened. Home page consists
 of 4 tabs that lists movies as listed below,
 1. Now Playing 
@@ -29,6 +31,8 @@ genre, release date (dd/mmm/yyyy), vote average and vote count
 3. Clicking on a movie card should redirect the user to the movie details page
 
 ## 2. Movie Details Page
+<img src="/Screenshots/Screenshot_MovieDetail.png?raw=true" alt="Movie Detail Screen" style="width:300px;"/>
+
 Use the following API to get the movie details for a given {movie-id}
 https://api.themoviedb.org/3/movie/{movie-id}
 
@@ -39,6 +43,8 @@ average, vote count, spoken languages and status in a user-friendly design
 2. The details page should provide a CTA for the user to mark a movie as favourite
 
 ## 3. Search Page 
+<img src="/Screenshots/Screenshot_Search.png?raw=true" alt="Search Screen" style="width:300px;"/>
+
 The home page toolbar or any other CTA should enable the user to search across movies for
 a given {query}.
 Note: This is not a category specific search and it is outside the scope of the home page
@@ -53,6 +59,8 @@ genre, release date (dd/mmm/yyyy), vote average and vote count
 3. Clicking on a movie card should redirect the user to the movie details page
 
 ## 4. Favourites
+<img src="/Screenshots/Screenshot_FavouriteList.png?raw=true" alt="Favourite List Screen" style="width:300px;"/>  <img src="/Screenshots/Screenshot_FavouriteDetail.png?raw=true" alt="Favourite Movie Detail Screen" style="width:300px;"/>
+
 Design and develop a page to list all the movies that were favourited by the user from the
 movie details page
 This page should involve fetching the data from a local data source (preferably Room)
@@ -62,6 +70,6 @@ This page should involve fetching the data from a local data source (preferably 
 genre, release date (dd/mmm/yyyy), vote average and vote count
 2. Clicking on a movie card should redirect the user to the movie details page
 
-Your assignment submission will be evaluated based on the architecture, UI/UX, frameworks
-being used and code reusability
+# API Documentation
+https://developers.themoviedb.org/3/getting-started/introduction
 
