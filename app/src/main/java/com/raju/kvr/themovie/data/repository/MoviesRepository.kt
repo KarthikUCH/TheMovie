@@ -1,6 +1,7 @@
 package com.raju.kvr.themovie.data.repository
 
 import androidx.lifecycle.LiveData
+import com.raju.kvr.themovie.data.remote.model.Result
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.Movies
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    fun getGenres(): Flow<Boolean>
+    suspend fun getGenres(): Result<Boolean>
 
     fun getMovies(
         category: String,

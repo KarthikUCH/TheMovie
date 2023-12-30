@@ -1,11 +1,10 @@
 package com.raju.kvr.themovie.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.raju.kvr.themovie.data.db.dao.FavouriteMovieDao
 import com.raju.kvr.themovie.data.db.entity.asDomainModal
 import com.raju.kvr.themovie.data.db.entity.asDomainModel
 import com.raju.kvr.themovie.data.remote.MovieApi
+import com.raju.kvr.themovie.data.remote.model.Result
 import com.raju.kvr.themovie.data.remote.model.asDomainModel
 import com.raju.kvr.themovie.data.remote.model.mapWithName
 import com.raju.kvr.themovie.domain.model.Movie
@@ -25,14 +24,17 @@ class MoviesRepositoryImpl(
 ) : MoviesRepository {
 
     private var genreMap: Map<Long, String> = emptyMap()
-
-    override fun getGenres(): Flow<Boolean> = flow {
+    override suspend fun getGenres(): Result<Boolean> = withContext(Dispatchers.IO) {
         genreMap.ifEmpty {
-            genreMap = movieApi.getGenreList().genres.mapWithName()
+            try {
+                genreMap = movieApi.getGenreList().genres.mapWithName()
+            } catch (e: Exception) {
+                return@withContext Result.Failure(e, "Pls Try Again Later")
+            }
             genreMap
         }
-        emit(genreMap.isNotEmpty())
-    }.flowOn(Dispatchers.IO)
+        Result.Success(genreMap.isNotEmpty())
+    }
 
     override fun getMovies(
         category: String,

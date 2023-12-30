@@ -1,7 +1,5 @@
 package com.raju.kvr.themovie.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.raju.kvr.themovie.data.db.dao.FavouriteMovieDao
 import com.raju.kvr.themovie.data.db.entity.FavouriteMovie
 import com.raju.kvr.themovie.data.remote.MovieApi
@@ -106,12 +104,12 @@ internal class MoviesRepositoryTest {
     fun getGenres_Success() = runTest {
 
         whenever(movieApi.getGenreList()).then { genreListResponse }
-        val genreMapResult = moviesRepository.getGenres().first()
+        val genreMapResult = moviesRepository.getGenres()
 
-        // verify(genreListResponse.genres.mapWithName(), times(1)) TODO
         verify(movieApi, times(1)).getGenreList()
 
-        Assert.assertEquals(true, genreMapResult)
+        Assert.assertTrue(genreMapResult is Result.Success)
+        Assert.assertEquals(true, (genreMapResult as Result.Success).response)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -119,12 +117,25 @@ internal class MoviesRepositoryTest {
     fun getGenres_Failure() = runTest {
 
         whenever(movieApi.getGenreList()).then { GenreListResponse(emptyList()) }
-        val genreMapResult = moviesRepository.getGenres().first()
+        val genreMapResult = moviesRepository.getGenres()
 
-        // verify(genreListResponse.genres.mapWithName(), times(1)) TODO
         verify(movieApi, times(1)).getGenreList()
 
-        Assert.assertEquals(false, genreMapResult)
+        Assert.assertTrue(genreMapResult is Result.Success)
+        Assert.assertEquals(false, (genreMapResult as Result.Success).response)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun getGenres_Exception() = runTest {
+
+        whenever(movieApi.getGenreList()).then { throw RuntimeException() }
+        val genreMapResult = moviesRepository.getGenres()
+
+        verify(movieApi, times(1)).getGenreList()
+
+        Assert.assertTrue(genreMapResult is Result.Failure)
+        Assert.assertEquals("Pls Try Again Later", (genreMapResult as Result.Failure).message)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -136,7 +147,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.getMovieList("category", 1)).then { movieListResponse }
 
-        var movies = moviesRepository.getMovies("category", 1).first()
+        val movies = moviesRepository.getMovies("category", 1).first()
 
         verify(movieApi, times(1)).getMovieList("category", 1)
 
@@ -153,7 +164,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.searchMovies("query", 1)).then { movieListResponse }
 
-        var moviesResult = moviesRepository.searchMovies("query", 1).first()
+        val moviesResult = moviesRepository.searchMovies("query", 1).first()
 
         verify(movieApi, times(1)).searchMovies("query", 1)
 
@@ -167,7 +178,7 @@ internal class MoviesRepositoryTest {
     fun getMovieDetail() = runTest {
         whenever(movieApi.getMovieDetail(1081893)).then { movieDetailResponse }
 
-        var movieDetailResult = moviesRepository.getMovieDetail(1081893).first()
+        val movieDetailResult = moviesRepository.getMovieDetail(1081893).first()
 
         verify(movieApi, times(1)).getMovieDetail(1081893)
 
