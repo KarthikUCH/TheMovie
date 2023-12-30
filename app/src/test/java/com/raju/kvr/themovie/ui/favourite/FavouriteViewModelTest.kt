@@ -3,11 +3,14 @@ package com.raju.kvr.themovie.ui.favourite
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.raju.kvr.themovie.MainDispatcherRule
 import com.raju.kvr.themovie.data.db.entity.FavouriteMovie
 import com.raju.kvr.themovie.data.db.entity.asDomainModal
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.getOrAwaitValue
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +29,9 @@ internal class FavouriteViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Mock
     private lateinit var moviesRepository: MoviesRepository
@@ -46,14 +52,12 @@ internal class FavouriteViewModelTest {
         status = "status"
     )
 
-    private val favouriteMovieList: LiveData<List<Movie>> =
-        MutableLiveData(
-            listOf(
-                favouriteMovie,
-                favouriteMovie.copy(id = 2, movieId = 1081894),
-                favouriteMovie.copy(id = 3, movieId = 1081895)
-            ).asDomainModal()
-        )
+    private val favouriteMovieList: List<Movie> = listOf(
+        favouriteMovie,
+        favouriteMovie.copy(id = 2, movieId = 1081894),
+        favouriteMovie.copy(id = 3, movieId = 1081895)
+    ).asDomainModal()
+
 
     @Before
     fun setUp() {
@@ -61,8 +65,8 @@ internal class FavouriteViewModelTest {
     }
 
     @Test
-    fun getMovies() {
-        whenever(moviesRepository.getFavouriteMovies()).then { favouriteMovieList }
+    fun getMovies() = runTest {
+        whenever(moviesRepository.getFavouriteMovies()).then { flowOf(favouriteMovieList) }
 
         val result = viewModel.getMovies().getOrAwaitValue()
 
