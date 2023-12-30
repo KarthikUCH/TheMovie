@@ -13,7 +13,6 @@ import com.raju.kvr.themovie.domain.model.Movies
 import com.raju.kvr.themovie.domain.model.asDbModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -58,11 +57,15 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override fun getMovieDetail(
+    override suspend fun getMovieDetail(
         movieId: Long
-    ): Flow<MovieDetail> = flow {
-        emit(movieApi.getMovieDetail(movieId).asDomainModel())
-    }.flowOn(Dispatchers.IO)
+    ): Result<MovieDetail> = withContext(Dispatchers.IO) {
+        try {
+            Result.Success(movieApi.getMovieDetail(movieId).asDomainModel())
+        } catch (e: Exception) {
+            Result.Failure(e, "Pls Try Again Later")
+        }
+    }
 
     override suspend fun addToFavourite(movieDetail: MovieDetail) {
         withContext(Dispatchers.IO) {

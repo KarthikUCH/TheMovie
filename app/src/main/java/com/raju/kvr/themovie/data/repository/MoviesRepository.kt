@@ -1,6 +1,5 @@
 package com.raju.kvr.themovie.data.repository
 
-import androidx.lifecycle.LiveData
 import com.raju.kvr.themovie.data.remote.model.Result
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.domain.model.MovieDetail
@@ -21,9 +20,9 @@ interface MoviesRepository {
         page: Int
     ): Result<Movies>
 
-    fun getMovieDetail(
+    suspend fun getMovieDetail(
         movieId: Long
-    ): Flow<MovieDetail>
+    ): Result<MovieDetail>
 
     suspend fun addToFavourite(movieDetail: MovieDetail)
 

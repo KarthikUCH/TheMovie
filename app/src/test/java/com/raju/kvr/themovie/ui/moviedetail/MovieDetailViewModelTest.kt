@@ -2,6 +2,7 @@ package com.raju.kvr.themovie.ui.moviedetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.raju.kvr.themovie.MainDispatcherRule
+import com.raju.kvr.themovie.data.remote.model.Result
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Genre
 import com.raju.kvr.themovie.domain.model.Language
@@ -66,7 +67,7 @@ internal class MovieDetailViewModelTest {
     fun loadMovie_fromRemote() = runTest {
         // Given
         whenever(moviesRepository.getMovieFromDb(1081893)).then { flowOf(null) }
-        whenever(moviesRepository.getMovieDetail(1081893)).then { flowOf(movieDetail) }
+        whenever(moviesRepository.getMovieDetail(1081893)).then { Result.Success(movieDetail) }
 
         // When
         viewModel.loadMovie(1081893)

@@ -178,7 +178,7 @@ internal class MoviesRepositoryTest {
     fun getMovieDetail() = runTest {
         whenever(movieApi.getMovieDetail(1081893)).then { movieDetailResponse }
 
-        val movieDetailResult = moviesRepository.getMovieDetail(1081893).first()
+        val movieDetailResult = (moviesRepository.getMovieDetail(1081893) as Result.Success).response
 
         verify(movieApi, times(1)).getMovieDetail(1081893)
 
