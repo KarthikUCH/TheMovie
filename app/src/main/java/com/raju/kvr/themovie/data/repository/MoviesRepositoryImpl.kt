@@ -88,6 +88,6 @@ class MoviesRepositoryImpl(
     override fun getFavouriteMovies(): Flow<List<Movie>> {
         return favouriteMovieDao.getMovieList().map {
             it.asDomainModal()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }
