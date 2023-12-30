@@ -2,12 +2,12 @@ package com.raju.kvr.themovie.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raju.kvr.themovie.data.remote.model.Result
 import com.raju.kvr.themovie.data.repository.MoviesRepository
 import com.raju.kvr.themovie.domain.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,17 +46,23 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
     private fun loadMovies() {
         _status.value = Status.LOADING
         viewModelScope.launch {
-            if (isSearch) {
+            val moviesResult = if (isSearch) {
                 moviesRepository.searchMovies(category, page)
             } else {
                 moviesRepository.getMovies(category, page)
-            }.catch {
-                _status.value = Status.ERROR
-                page--
-            }.collect { movies ->
-                reachedLastPage = page >= movies.totalPages
-                _movies.value = _movies.value?.plus(movies.movieList) ?: movies.movieList
-                _status.value = Status.SUCCESS
+            }
+
+            when (moviesResult) {
+                is Result.Failure -> {
+                    _status.value = Status.ERROR
+                    page--
+                }
+
+                is Result.Success -> {
+                    reachedLastPage = page >= moviesResult.response.totalPages
+                    _movies.value = _movies.value.plus(moviesResult.response.movieList)
+                    _status.value = Status.SUCCESS
+                }
             }
         }
     }

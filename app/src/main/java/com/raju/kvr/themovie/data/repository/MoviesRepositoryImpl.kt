@@ -36,19 +36,27 @@ class MoviesRepositoryImpl(
         Result.Success(genreMap.isNotEmpty())
     }
 
-    override fun getMovies(
+    override suspend fun getMovies(
         category: String,
         page: Int
-    ): Flow<Movies> = flow<Movies> {
-        emit(movieApi.getMovieList(category, page).asDomainModel(genreMap))
-    }.flowOn(Dispatchers.IO)
+    ): Result<Movies> = withContext(Dispatchers.IO) {
+        try {
+            Result.Success(movieApi.getMovieList(category, page).asDomainModel(genreMap))
+        } catch (e: Exception) {
+            Result.Failure(e, "Pls Try Again Later")
+        }
+    }
 
-    override fun searchMovies(
+    override suspend fun searchMovies(
         query: String,
         page: Int
-    ): Flow<Movies> = flow<Movies> {
-        emit(movieApi.searchMovies(query, page).asDomainModel(genreMap))
-    }.flowOn(Dispatchers.IO)
+    ): Result<Movies> = withContext(Dispatchers.IO) {
+        try {
+            Result.Success(movieApi.searchMovies(query, page).asDomainModel(genreMap))
+        } catch (e: Exception) {
+            Result.Failure(e, "Pls Try Again Later")
+        }
+    }
 
     override fun getMovieDetail(
         movieId: Long

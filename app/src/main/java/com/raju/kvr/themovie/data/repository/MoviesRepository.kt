@@ -11,15 +11,15 @@ interface MoviesRepository {
 
     suspend fun getGenres(): Result<Boolean>
 
-    fun getMovies(
+    suspend fun getMovies(
         category: String,
         page: Int
-    ): Flow<Movies>
+    ): Result<Movies>
 
-    fun searchMovies(
+    suspend fun searchMovies(
         query: String,
         page: Int
-    ): Flow<Movies>
+    ): Result<Movies>
 
     fun getMovieDetail(
         movieId: Long

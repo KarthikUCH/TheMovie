@@ -147,7 +147,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.getMovieList("category", 1)).then { movieListResponse }
 
-        val movies = moviesRepository.getMovies("category", 1).first()
+        val movies = (moviesRepository.getMovies("category", 1) as Result.Success).response
 
         verify(movieApi, times(1)).getMovieList("category", 1)
 
@@ -164,7 +164,7 @@ internal class MoviesRepositoryTest {
         whenever(movieApi.getGenreList()).then { genreListResponse }
         whenever(movieApi.searchMovies("query", 1)).then { movieListResponse }
 
-        val moviesResult = moviesRepository.searchMovies("query", 1).first()
+        val moviesResult = (moviesRepository.searchMovies("query", 1) as Result.Success).response
 
         verify(movieApi, times(1)).searchMovies("query", 1)
 
