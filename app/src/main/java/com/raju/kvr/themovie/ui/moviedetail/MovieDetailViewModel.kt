@@ -58,7 +58,7 @@ class MovieDetailViewModel @Inject constructor(private val moviesRepository: Mov
                 it.printStackTrace()
             }.collect {
                 when (it) {
-                    is Result.Failure -> {
+                    is Result.Error -> {
                         // Do Nothing
                     }
 

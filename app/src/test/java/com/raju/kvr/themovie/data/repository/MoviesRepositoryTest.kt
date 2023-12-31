@@ -134,8 +134,8 @@ internal class MoviesRepositoryTest {
 
         verify(movieApi, times(1)).getGenreList()
 
-        Assert.assertTrue(genreMapResult is Result.Failure)
-        Assert.assertEquals("Pls Try Again Later", (genreMapResult as Result.Failure).message)
+        Assert.assertTrue(genreMapResult is Result.Error)
+        Assert.assertEquals("Pls Try Again Later", (genreMapResult as Result.Error).message)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

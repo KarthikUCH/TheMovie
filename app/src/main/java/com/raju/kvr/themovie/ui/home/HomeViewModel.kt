@@ -53,7 +53,7 @@ class HomeViewModel @Inject constructor(private val moviesRepository: MoviesRepo
             }
 
             when (moviesResult) {
-                is Result.Failure -> {
+                is Result.Error -> {
                     _status.value = Status.ERROR
                     page--
                 }

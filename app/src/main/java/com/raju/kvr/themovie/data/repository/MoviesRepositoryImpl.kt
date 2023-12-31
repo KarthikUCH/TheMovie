@@ -28,7 +28,7 @@ class MoviesRepositoryImpl(
             try {
                 genreMap = movieApi.getGenreList().genres.mapWithName()
             } catch (e: Exception) {
-                return@withContext Result.Failure(e, "Pls Try Again Later")
+                return@withContext Result.Error(e, "Pls Try Again Later")
             }
             genreMap
         }
@@ -42,7 +42,7 @@ class MoviesRepositoryImpl(
         try {
             Result.Success(movieApi.getMovieList(category, page).asDomainModel(genreMap))
         } catch (e: Exception) {
-            Result.Failure(e, "Pls Try Again Later")
+            Result.Error(e, "Pls Try Again Later")
         }
     }
 
@@ -53,7 +53,7 @@ class MoviesRepositoryImpl(
         try {
             Result.Success(movieApi.searchMovies(query, page).asDomainModel(genreMap))
         } catch (e: Exception) {
-            Result.Failure(e, "Pls Try Again Later")
+            Result.Error(e, "Pls Try Again Later")
         }
     }
 
@@ -63,7 +63,7 @@ class MoviesRepositoryImpl(
         try {
             Result.Success(movieApi.getMovieDetail(movieId).asDomainModel())
         } catch (e: Exception) {
-            Result.Failure(e, "Pls Try Again Later")
+            Result.Error(e, "Pls Try Again Later")
         }
     }
 

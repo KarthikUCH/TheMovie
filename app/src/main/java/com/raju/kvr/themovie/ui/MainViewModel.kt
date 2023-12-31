@@ -27,7 +27,6 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
             _statusChannel.value = Status.LOADING
             moviesRepository.getGenres().let { result ->
                 when (result) {
-
                     is Result.Success -> {
                         _statusChannel.value = if (result.response) {
                             Status.SUCCESS
@@ -36,7 +35,7 @@ class MainViewModel @Inject constructor(private val moviesRepository: MoviesRepo
                         }
                     }
 
-                    is Result.Failure -> {
+                    is Result.Error -> {
                         _statusChannel.value = Status.ERROR
                     }
                 }
