@@ -4,23 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMainBinding
 import com.raju.kvr.themovie.ui.favourite.FavouriteActivity
-import com.raju.kvr.themovie.ui.home.HomeFragment
 import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -28,7 +24,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var pagerAdapter: ViewPagerAdapter
+    private lateinit var navController: NavController
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -37,6 +33,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        setupActionBarWithNavController(navController)
+
         observeViewModel()
     }
 
@@ -51,29 +53,37 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, SearchActivity::class.java))
                 true
             }
+
             R.id.action_favourite -> {
                 startActivity(Intent(this, FavouriteActivity::class.java))
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainViewModel.status.collect{
+                mainViewModel.status.collect {
                     when (it) {
                         MainViewModel.Status.LOADING -> {
                             displayLoading()
                         }
+
                         MainViewModel.Status.SUCCESS -> {
-                            displayHomePage()
                             mainViewModel.displayedHomePage()
                         }
+
                         MainViewModel.Status.ERROR -> {
                             displayError()
                         }
+
                         else -> {}
                     }
                 }
@@ -95,49 +105,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun displayHomePage() {
-
-        initViewPager()
-        initTabLayout()
-
-        binding.apply {
-            layoutHome.visibility = View.VISIBLE
-            layoutMain.visibility = View.GONE
-        }
-    }
-
-    private fun initTabLayout() {
-        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = when (position) {
-                1 -> "Now Playing"
-                2 -> "Popular"
-                3 -> "Top Rated"
-                else -> "Upcoming"
-            }
-        }.attach()
-    }
-
-    private fun initViewPager() {
-        pagerAdapter = ViewPagerAdapter(this)
-        binding.pager.adapter = pagerAdapter
-    }
-
-    /**
-     *  Adapter to handle view pager
-     */
-    class ViewPagerAdapter(fragmentActivity: FragmentActivity) :
-        FragmentStateAdapter(fragmentActivity) {
-        override fun getItemCount(): Int {
-            return 4
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                1 -> HomeFragment.newInstance("now_playing")
-                2 -> HomeFragment.newInstance("popular")
-                3 -> HomeFragment.newInstance("top_rated")
-                else -> HomeFragment.newInstance("upcoming")
-            }
-        }
-    }
 }
