@@ -9,5 +9,20 @@
         android:id="@+id/mainFragment"
         android:name="com.raju.kvr.themovie.ui.MainFragment"
         android:label="The Movie"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_homeFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="com.raju.kvr.themovie.ui.moviedetail.MovieDetailFragment"
+        android:label="MovieDetailFragment">
+        <argument
+            android:name="movieId"
+            app:argType="long" />
+    </fragment>
+
 </navigation>

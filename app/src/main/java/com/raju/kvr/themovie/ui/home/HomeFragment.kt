@@ -1,6 +1,5 @@
 package com.raju.kvr.themovie.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.raju.kvr.themovie.databinding.FragmentHomeBinding
 import com.raju.kvr.themovie.domain.model.Movie
-import com.raju.kvr.themovie.ui.moviedetail.MovieDetailActivity
+import com.raju.kvr.themovie.ui.MainFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 private const val ARG_CATEGORY = "category"
@@ -84,13 +83,9 @@ class HomeFragment : Fragment() {
 
 
     private fun openMovie(movie: Movie) {
-        activity?.let {
-            val intent = Intent(context, MovieDetailActivity::class.java)
-            intent.apply {
-                putExtra(MovieDetailActivity.ARG_MOVIE_ID, movie.id)
-            }
-            it.startActivity(intent)
-        }
+        val action =
+            MainFragmentDirections.actionHomeFragmentToMovieDetailFragment(movieId = movie.id)
+        findNavController().navigate(action)
     }
 
     private fun loadMovies() {
@@ -114,6 +109,7 @@ class HomeFragment : Fragment() {
                             HomeViewModel.Status.SUCCESS -> {
                                 isLoading = false
                             }
+
                             HomeViewModel.Status.ERROR -> {
                                 isLoading = false
                             }

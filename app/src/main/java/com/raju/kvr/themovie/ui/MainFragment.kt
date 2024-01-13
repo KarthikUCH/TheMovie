@@ -41,7 +41,6 @@ class MainFragment : Fragment() {
         displayHomePage()
     }
 
-
     private fun displayHomePage() {
         initViewPager()
         initTabLayout()

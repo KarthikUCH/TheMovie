@@ -32,12 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)
+        setUpNavController()
 
         observeViewModel()
     }
@@ -65,6 +61,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    private fun setUpNavController() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+
+            if (destination.label?.equals("The Movie") == true) {
+                setUpActionBar()
+            }
+
+            println("The destination is ${destination.label} ")
+        }
+    }
+
+    private fun setUpActionBar() {
+        setSupportActionBar(binding.toolbar)
+        setupActionBarWithNavController(navController)
+        supportActionBar?.show()
     }
 
     private fun observeViewModel() {
