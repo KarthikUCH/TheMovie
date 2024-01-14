@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.raju.kvr.themovie.R
@@ -67,10 +68,9 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun setUpActionBar() {
-        (activity as AppCompatActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

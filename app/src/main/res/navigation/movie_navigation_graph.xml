@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_mainFragment_to_favouriteMovieFragment"
             app:destination="@id/favouriteMovieFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_searchMovieFragment"
+            app:destination="@id/searchMovieFragment" />
     </fragment>
 
     <fragment
@@ -34,6 +37,15 @@
         android:label="FavouriteMovieFragment" >
         <action
             android:id="@+id/action_favouriteMovieFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchMovieFragment"
+        android:name="com.raju.kvr.themovie.ui.search.SearchMovieFragment"
+        android:label="fragment_search_movie"
+        tools:layout="@layout/fragment_search_movie" >
+        <action
+            android:id="@+id/action_searchMovieFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment" />
     </fragment>
 

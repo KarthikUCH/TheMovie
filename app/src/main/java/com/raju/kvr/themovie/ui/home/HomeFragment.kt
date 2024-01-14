@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.raju.kvr.themovie.databinding.FragmentHomeBinding
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.MainFragmentDirections
+import com.raju.kvr.themovie.ui.search.SearchMovieFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -83,9 +84,15 @@ class HomeFragment : Fragment() {
 
 
     private fun openMovie(movie: Movie) {
-        val action =
-            MainFragmentDirections.actionHomeFragmentToMovieDetailFragment(movieId = movie.id)
-        findNavController().navigate(action)
+        if(isSearch){
+            val action =
+                SearchMovieFragmentDirections.actionSearchMovieFragmentToMovieDetailFragment(movieId = movie.id)
+            findNavController().navigate(action)
+        } else {
+            val action =
+                MainFragmentDirections.actionHomeFragmentToMovieDetailFragment(movieId = movie.id)
+            findNavController().navigate(action)
+        }
     }
 
     private fun loadMovies() {

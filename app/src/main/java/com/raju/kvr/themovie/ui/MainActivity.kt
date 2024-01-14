@@ -1,9 +1,9 @@
 package com.raju.kvr.themovie.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -14,7 +14,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMainBinding
-import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -45,7 +44,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                startActivity(Intent(this, SearchActivity::class.java))
+                val action = MainFragmentDirections.actionMainFragmentToSearchMovieFragment()
+                navController.navigate(action)
                 true
             }
 
@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         MainViewModel.Status.SUCCESS -> {
+                            hideLoading()
                             mainViewModel.displayedHomePage()
                         }
 
@@ -112,6 +113,10 @@ class MainActivity : AppCompatActivity() {
             imgViewStatus.setImageResource(R.drawable.loading_animation)
             txtViewStatus.text = resources.getString(R.string.status_loading)
         }
+    }
+
+    private fun hideLoading() {
+        binding.layoutMain.visibility = View.GONE
     }
 
     private fun displayError() {

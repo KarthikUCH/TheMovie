@@ -1,13 +1,11 @@
 package com.raju.kvr.themovie.ui.favourite
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +13,6 @@ import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.FragmentFavouriteMovieBinding
 import com.raju.kvr.themovie.domain.model.Movie
 import com.raju.kvr.themovie.ui.home.MoviesListAdapter
-import com.raju.kvr.themovie.ui.moviedetail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -54,10 +51,9 @@ class FavouriteMovieFragment : Fragment() {
     }
 
     private fun setUpActionBar() {
-        (activity as AppCompatActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
+        binding.toolbar.setNavigationIcon(R.drawable.arrow_back)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
@@ -75,7 +71,8 @@ class FavouriteMovieFragment : Fragment() {
     }
 
     private fun openMovie(movie: Movie) {
-        val action = FavouriteMovieFragmentDirections.actionFavouriteMovieFragmentToMovieDetailFragment(movie.id)
+        val action =
+            FavouriteMovieFragmentDirections.actionFavouriteMovieFragmentToMovieDetailFragment(movie.id)
         findNavController().navigate(action)
     }
 }
