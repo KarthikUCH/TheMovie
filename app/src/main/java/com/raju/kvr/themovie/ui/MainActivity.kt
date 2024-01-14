@@ -14,7 +14,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.raju.kvr.themovie.R
 import com.raju.kvr.themovie.databinding.ActivityMainBinding
-import com.raju.kvr.themovie.ui.favourite.FavouriteActivity
 import com.raju.kvr.themovie.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,7 +50,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.action_favourite -> {
-                startActivity(Intent(this, FavouriteActivity::class.java))
+                val action = MainFragmentDirections.actionMainFragmentToFavouriteMovieFragment()
+                navController.navigate(action)
                 true
             }
 

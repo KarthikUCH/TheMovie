@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.raju.kvr.themovie.R
-import com.raju.kvr.themovie.databinding.ActivityMovieDetailBinding
 import com.raju.kvr.themovie.databinding.FragmentMovieDetailBinding
 import com.raju.kvr.themovie.domain.model.MovieDetail
 import com.raju.kvr.themovie.domain.model.toUiData
@@ -53,10 +52,6 @@ class MovieDetailFragment : Fragment() {
         viewModel.loadMovie(movieId)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     private fun initFavouriteToggleListener() {
         binding.toggleFavourite.setOnCheckedChangeListener { _, isChecked ->
             viewModel.markAsFavourite(isChecked)
@@ -67,14 +62,16 @@ class MovieDetailFragment : Fragment() {
         binding.toggleFavourite.setOnCheckedChangeListener(null)
     }
 
-    private fun hideMainActionBar(){
+    private fun hideMainActionBar() {
         (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
     private fun setUpActionBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
+        (activity as AppCompatActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+        }
     }
 
 
